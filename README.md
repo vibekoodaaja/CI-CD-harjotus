@@ -39,12 +39,29 @@ Jos jokin vaihe epäonnistuu, myöhemmät vaiheet eivät suoritu eikä artifacti
 
 ## Linkit ajoihin
 
-- Onnistunut ajo: _TODO: linkki_
-- Epäonnistunut ajo: _TODO: linkki tai kuvakaappaus_
+- Onnistunut ajo (#1, commit `e4be656`): https://github.com/vibekoodaaja/CI-CD-harjotus/actions/runs/36853572918
+- Epäonnistunut ajo (#2, commit `38beb94`): https://github.com/vibekoodaaja/CI-CD-harjotus/actions/runs/36854156364
+- Korjauksen jälkeinen ajo (#3): ks. [Actions](https://github.com/vibekoodaaja/CI-CD-harjotus/actions)
 
 ## Lokianalyysi: tahallinen virhe
 
-_TODO: täytetään virheharjoituksen jälkeen._
+**Muutos:** testissä `test_add` odotusarvo vaihdettiin tahallaan: `assert add(2, 3) == 6`.
+
+**Havainnot lokista (ajo #2):**
+1. *Trigger:* `push` mainiin, commit `38beb94`, eli tapahtuma oli odotettu.
+2. *Job:* `Lint, test and package` käynnistyi normaalisti, ei skipattu.
+3. *Ensimmäinen punainen step:* **Run unit tests**. Sitä edeltävät stepit (checkout, Python, riippuvuudet, Ruff) olivat vihreitä, joten vika ei ole ympäristössä eikä koodityylissä.
+4. *Varsinainen virhe:*
+   ```
+   test_app.py:5: AssertionError
+   FAILED test_app.py::test_add - assert 5 == 6
+   1 failed, 2 passed
+   ```
+   `add(2, 3)` palautti **5** (toteutunut), testi odotti **6** (odotettu). Funktio toimii oikein, joten vika on testin odotusarvossa.
+5. *Seurannaisvaikutus:* paketointi- ja upload-stepit skipattiin, joten rikkinäisestä commitista **ei syntynyt artifactia**. Juuri näin laatuportin kuuluukin toimia.
+6. *Paikallinen toisto:* `pytest -q` antoi saman virheen.
+
+**Korjaus:** odotusarvo palautettiin muotoon `== 5`. Paikallisesti `3 passed`, ja seuraava CI-ajo on taas vihreä ja tuottaa artifactin.
 
 ## Branch protection
 
