@@ -41,7 +41,7 @@ Jos jokin vaihe epäonnistuu, myöhemmät vaiheet eivät suoritu eikä artifacti
 
 - Onnistunut ajo (#1, commit `e4be656`): https://github.com/vibekoodaaja/CI-CD-harjotus/actions/runs/36853572918
 - Epäonnistunut ajo (#2, commit `38beb94`): https://github.com/vibekoodaaja/CI-CD-harjotus/actions/runs/36854156364
-- Korjauksen jälkeinen ajo (#3): ks. [Actions](https://github.com/vibekoodaaja/CI-CD-harjotus/actions)
+- Korjauksen jälkeinen ajo (#3, commit `a4a2668`): https://github.com/vibekoodaaja/CI-CD-harjotus/actions/runs/36854989206
 
 ## Lokianalyysi: tahallinen virhe
 
