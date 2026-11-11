@@ -73,7 +73,7 @@ Testattu [PR #1](https://github.com/vibekoodaaja/CI-CD-harjotus/pull/1):llä: `p
 
 **Turvallisuus**
 - `permissions: contents: read`: workflow'n `GITHUB_TOKEN` saa vain lukuoikeuden repoon, joten vaikka jokin step olisi haavoittuva, se ei voi muokata koodia tai julkaisuja.
-- Repossa ei ole salaisuuksia eikä pilviavaimia. Mahdollinen deployment tehtäisiin OIDC:llä (alla), jolloin pitkäikäisiä avaimia ei tarvita lainkaan.
+- Repossa ei ole salaisuuksia eikä pilviavaimia. Mahdollinen deployment tehtäisiin OIDC:llä, jolloin pitkäikäisiä avaimia ei tarvita lainkaan.
 - Käytössä vain GitHubin viralliset actionit (`actions/*`). Tuotannossa ne kannattaisi lukita commit-SHA:han tagin sijaan supply chain -riskin pienentämiseksi.
 - Ei `pull_request_target`-triggeriä, joten forkeista tuleva epäluotettu koodi ei saa repon oikeuksia.
 - Branch protection varmistaa, ettei rikkinäistä koodia päädy mainiin.
@@ -83,19 +83,3 @@ Testattu [PR #1](https://github.com/vibekoodaaja/CI-CD-harjotus/pull/1):llä: `p
 - `timeout-minutes: 10` estää jumiin jääneen ajon polttamasta minuutteja.
 - pip-välimuisti nopeuttaa ajoa ja `retention-days: 7` rajaa artifact-tallennustilan käyttöä.
 - Branch- ja event-rajaukset estävät turhat ajot.
-
-## Valinnainen: avaimeton deployment (suunnitelma)
-
-Esimerkkinä AWS Lambda:
-
-1. AWS:ään luodaan IAM OIDC identity provider `token.actions.githubusercontent.com`.
-2. Luodaan IAM-rooli, jonka trust policy sallii vain tämän repon `main`-haaran (`sub: repo:vibekoodaaja/CI-CD-harjotus:ref:refs/heads/main`) ja jonka oikeudet rajataan yhden Lambda-funktion koodin päivitykseen (`lambda:UpdateFunctionCode`).
-3. Workflow'hun lisätään erillinen `deploy`-job, joka:
-   - riippuu build-jobista (`needs: quality-and-build`) ja ajetaan vain pushista mainiin
-   - käyttää GitHub Environmentia `production` (vaadittu hyväksyjä → Continuous Delivery)
-   - saa oikeuden `id-token: write` vain tässä jobissa
-   - hakee väliaikaiset tunnukset `aws-actions/configure-aws-credentials`-actionilla (`role-to-assume`)
-   - lataa build-jobin artifactin ja päivittää Lambdan
-4. Budjettihälytys AWS:ään ja resurssien poisto harjoituksen jälkeen.
-
-Näin pilveen ei tallenneta yhtään pysyvää avainta, ja käyttöoikeus on lyhytikäinen ja sidottu tiettyyn repoon ja haaraan.
