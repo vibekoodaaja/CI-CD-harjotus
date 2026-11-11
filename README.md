@@ -67,6 +67,8 @@ Jos jokin vaihe epäonnistuu, myöhemmät vaiheet eivät suoritu eikä artifacti
 
 `main`-haaralle on asetettu sääntö: muutokset vain pull requestin kautta, ja status check **Lint, test and package** pitää mennä läpi ennen mergeä. Suorat pushit ja force-pushit on estetty.
 
+Testattu [PR #1](https://github.com/vibekoodaaja/CI-CD-harjotus/pull/1):llä: `pull_request`-trigger käynnisti ajon [#4](https://github.com/vibekoodaaja/CI-CD-harjotus/actions/runs/43102714094), ja merge-nappi aukesi vasta kun check **Lint, test and package** oli vihreä. Mergen jälkeen `push`-ajo [#5](https://github.com/vibekoodaaja/CI-CD-harjotus/actions/runs/43102821153) meni myös läpi.
+
 ## Turvallisuus- ja kustannusreflektio
 
 **Turvallisuus**
