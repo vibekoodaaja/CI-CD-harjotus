@@ -82,18 +82,4 @@ Jos jokin vaihe epäonnistuu, myöhemmät vaiheet eivät suoritu eikä artifacti
 - pip-välimuisti nopeuttaa ajoa ja `retention-days: 7` rajaa artifact-tallennustilan käyttöä.
 - Branch- ja event-rajaukset estävät turhat ajot.
 
-## Valinnainen: avaimeton deployment (suunnitelma)
-
-Esimerkkinä AWS Lambda:
-
-1. AWS:ään luodaan IAM OIDC identity provider `token.actions.githubusercontent.com`.
-2. Luodaan IAM-rooli, jonka trust policy sallii vain tämän repon `main`-haaran (`sub: repo:vibekoodaaja/CI-CD-harjotus:ref:refs/heads/main`) ja jonka oikeudet rajataan yhden Lambda-funktion koodin päivitykseen (`lambda:UpdateFunctionCode`).
-3. Workflow'hun lisätään erillinen `deploy`-job, joka:
-   - riippuu build-jobista (`needs: quality-and-build`) ja ajetaan vain pushista mainiin
-   - käyttää GitHub Environmentia `production` (vaadittu hyväksyjä → Continuous Delivery)
-   - saa oikeuden `id-token: write` vain tässä jobissa
-   - hakee väliaikaiset tunnukset `aws-actions/configure-aws-credentials`-actionilla (`role-to-assume`)
-   - lataa build-jobin artifactin ja päivittää Lambdan
-4. Budjettihälytys AWS:ään ja resurssien poisto harjoituksen jälkeen.
-
-Näin pilveen ei tallenneta yhtään pysyvää avainta, ja käyttöoikeus on lyhytikäinen ja sidottu tiettyyn repoon ja haaraan.
+## Valinnainen: en jaksa ny tehä
